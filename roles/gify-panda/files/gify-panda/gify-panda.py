@@ -16,8 +16,12 @@ def random_panda():
     return render_template('random_image.html', img_url=img_url)
 
 if __name__ == "__main__":
-    file(pidfile, 'w').write(pid)
-try:
+  if os.path.isfile(pidfile):
+    print "%s already exists, exiting" % pidfile
+    sys.exit()
+
+  file(pidfile, 'w').write(pid)
+  try:
     panda_roulette.run(host='0.0.0.0')
-finally:
+  finally:
     os.unlink(pidfile)

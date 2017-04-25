@@ -1,0 +1,9 @@
+---
+- name: Deploy!
+  copy: src=counter-panda dest=/tmp/ owner=root group=root mode=0755
+
+- name: Run!
+  command: "/tmp/counter-panda/run.sh"
+  become: true
+  args:
+    creates: "/tmp/counter-panda.pid"

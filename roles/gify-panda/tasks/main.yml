@@ -3,5 +3,7 @@
   copy: src=gify-panda dest=/tmp/ owner=root group=root mode=0755
 
 - name: Run!
-  shell: /tmp/gify-panda/gify-panda.py creates=/tmp/gify-panda.pid &
+  command: "/tmp/gify-panda/run.sh"
   become: true
+  args:
+    creates: "/tmp/gify-panda.pid"

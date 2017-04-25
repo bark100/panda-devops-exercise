@@ -2,6 +2,10 @@
 
 from flask import Flask, request
 from flask_restful import Resource, Api
+import os,sys
+
+pid = str(os.getpid())
+pidfile = "/tmp/counter-panda.pid"
 
 app = Flask(__name__)
 api = Api(app)
@@ -22,4 +26,12 @@ app.register_error_handler(404, lambda e: '\nBad panda. Please use \'/\' as endp
 api.add_resource(count, '/')
 
 if __name__ == '__main__':
-    app.run(debug=False)
+  if os.path.isfile(pidfile):
+    print "%s already exists, exiting" % pidfile
+    sys.exit()
+
+  file(pidfile, 'w').write(pid)
+  try:
+    app.run(host='0.0.0.0', port=5001)
+  finally:
+    os.unlink(pidfile)
