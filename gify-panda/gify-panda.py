@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import os
 from random import choice
 from flask import url_for, render_template, Flask
