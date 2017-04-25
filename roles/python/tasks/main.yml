@@ -3,7 +3,8 @@
   become: yes
   apt: pkg={{item}} state=installed
   with_items:
-    - pip
+    - python-pip
 
 - pip:
+    chdir: /vagrant/roles/python/tasks
     requirements: requirements.txt

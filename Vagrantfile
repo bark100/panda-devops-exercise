@@ -7,10 +7,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
   config.vm.provider "virtualbox" do |v|
     v.memory = 1024
+    v.cpus = 2
   end
   
   config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "base.yml"
+    ansible.playbook = "mybase.yml"
     ansible.inventory_path = "dev"
     ansible.host_key_checking = false
     ansible.extra_vars = { 'ansible_connection' => 'ssh',
@@ -22,8 +23,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.ssh.forward_agent = true
   config.vm.network "private_network", type: "dhcp"
 
-  # Create a base machine 
-  config.vm.define "base" do |base|
-      base.vm.network :forwarded_port, host: 8080, guest: 8080
+  # Create a mybase machine 
+  config.vm.define "mybase" do |mybase|
+      mybase.vm.network :forwarded_port, host: 8080, guest: 8080
+      mybase.vm.network :forwarded_port, host: 5000, guest: 5000
+      mybase.vm.network :forwarded_port, host: 5001, guest: 5001
   end
 end
