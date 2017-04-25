@@ -1,0 +1,15 @@
+---
+- name: Common tasks
+  hosts: all
+  become: yes
+  pre_tasks:
+    - name: Set hostname
+      hostname: name={{inventory_hostname}}
+
+- name: Python dependencies
+  hosts: mybase
+  become: yes
+  roles:
+    - { role: python, tags: python }
+    - { role: gify-panda, tags: gify-panda }
+    - { role: counter-panda, tags: counter-panda }
