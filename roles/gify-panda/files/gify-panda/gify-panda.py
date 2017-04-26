@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os,sys # use core operating system helper functions
+import signal,os,sys # use core operating system helper functions
 from random import choice # random functions
 from flask import url_for, render_template, Flask
 
@@ -15,13 +15,18 @@ def random_panda(): # how we randomize pandas
     img_url = url_for('static', filename=os.path.join('resources', choice(names))) # generate panda urls from static folder + random panda
     return render_template('random_image.html', img_url=img_url) # show panda, passing panda url to html template
 
+def signal_handler(signal, frame): # exit gracefully when we recieve signal
+    os.unlink(pidfile)
+    sys.exit(0)
+
 if __name__ == "__main__": # execute only when running script directly
   if os.path.isfile(pidfile): # make sure script is not already run
     print "%s already exists, exiting" % pidfile
     sys.exit()
 
-  file(pidfile, 'w').write(pid)
   try:
+    file(pidfile, 'w').write(pid)
+    signal.signal(signal.SIGTERM, signal_handler) # register new signal handler
     panda_roulette.run(host='0.0.0.0') # run Flask server
   finally:
     os.unlink(pidfile)

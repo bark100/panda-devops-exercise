@@ -1,9 +1,18 @@
 ---
 - name: Deploy!
   copy: src=gify-panda dest=/tmp/ owner=root group=root mode=0755
+  register: new_version # save state when deploying new version
+
+- name: Stop!
+  command: /tmp/gify-panda/stop.sh
+  args:
+    removes: /tmp/gify-panda.pid # stop only if service is up
+  when: new_version.changed # stop after new version is deployed
+  ignore_errors: yes
+  register: stopped # save stopped state
 
 - name: Run!
-  command: "/tmp/gify-panda/run.sh"
-  become: true
+  command: /tmp/gify-panda/run.sh
   args:
-    creates: "/tmp/gify-panda.pid"
+    creates: /tmp/gify-panda.pid
+  when: new_version.changed or stopped.changed # run after new version deployment + after stopping

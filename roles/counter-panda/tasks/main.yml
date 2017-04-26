@@ -1,8 +1,19 @@
 ---
 - name: Deploy!
-  copy: src=counter-panda dest=/tmp/ owner=root group=root mode=0755 # copy program files
+  copy: src=counter-panda dest=/tmp/ owner=root group=root mode=0755
+  register: new_version # save state when deploying new version
+
+- name: Stop!
+  command: /tmp/counter-panda/stop.sh
+  args:
+    removes: /tmp/counter-panda.pid # stop only if service is up
+  when: new_version.changed # stop after new version is deployed
+  ignore_errors: yes
+  register: stopped # save stopped state
 
 - name: Run!
-  command: "/tmp/counter-panda/run.sh" # execute wrapper script
+  command: /tmp/counter-panda/run.sh
   args:
-    creates: "/tmp/counter-panda.pid" # only if PID does not exist (avoid unnecessary executions)
+    creates: /tmp/counter-panda.pid
+  when: new_version.changed or stopped.changed # run after new version deployment + after stopping
+
