@@ -6,11 +6,11 @@
     - name: Set hostname
       hostname: name={{inventory_hostname}}
 
-- name: Python dependencies
+- name: Panda Services
   hosts: mybase
   become: yes
   roles:
-    - { role: clean, tags: clean } # contains tasks created to handle crashes (process dead, PID exists)
     - { role: python, tags: python } # install python module dependencies
+    - { role: clean, tags: clean } # contains tasks created to handle crashes (process dead, PID exists)
     - { role: gify-panda, tags: gify-panda } # deploy and run gify-panda
     - { role: counter-panda, tags: counter-panda } # deploy and run gify-panda
