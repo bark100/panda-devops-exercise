@@ -7,7 +7,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
   config.vm.provider "virtualbox" do |v|
     v.memory = 1024
-    v.cpus = 2
+    v.cpus = 2 # added for increasing speed of execution
   end
   
   config.vm.provision "ansible" do |ansible|
@@ -25,7 +25,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Create a mybase machine 
   config.vm.define "mybase" do |mybase|
-      mybase.vm.network :forwarded_port, host: 5000, guest: 5000
-      mybase.vm.network :forwarded_port, host: 5001, guest: 5001
+      mybase.vm.network :forwarded_port, host: 5000, guest: 5000 # gify-panda Flask port
+      mybase.vm.network :forwarded_port, host: 5001, guest: 5001 # counter-panda Flask port
   end
 end

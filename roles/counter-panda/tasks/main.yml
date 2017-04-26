@@ -1,9 +1,8 @@
 ---
 - name: Deploy!
-  copy: src=counter-panda dest=/tmp/ owner=root group=root mode=0755
+  copy: src=counter-panda dest=/tmp/ owner=root group=root mode=0755 # copy program files
 
 - name: Run!
-  command: "/tmp/counter-panda/run.sh"
-  become: true
+  command: "/tmp/counter-panda/run.sh" # execute wrapper script
   args:
-    creates: "/tmp/counter-panda.pid"
+    creates: "/tmp/counter-panda.pid" # only if PID does not exist (avoid unnecessary executions)

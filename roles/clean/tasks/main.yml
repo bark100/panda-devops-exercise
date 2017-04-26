@@ -1,40 +1,36 @@
 ---
-- block:
-  - shell: ps |grep gify
-    ignore_errors: yes
-    register: gify_result
-  
-  - shell: ls /tmp/gify-panda.pid
-    ignore_errors: yes
-    register: gify_pid_result
-  
-  - shell: ps |grep counter
-    ignore_errors: yes
-    register: counter_result
-  
-  - shell: ls /tmp/counter-panda.pid
-    ignore_errors: yes
-    register: counter_pid_result
-  
-  - block: 
-    - shell: pkill -9 -f gify-panda
-      name: educating gify panda
-      ignore_errors: yes
-    - file:
-        path: /tmp/gify-panda.pid
-        state: absent
-    when: 
-      - gify_result.rc == 1
-      - gify_pid_result.rc == 0
- 
-  - block: 
-    - shell: pkill -9 -f counter-panda
-      name: educating counter panda
-      ignore_errors: yes
-    - file:
-        path: /tmp/counter-panda.pid
-        state: absent
-    when: 
-      - counter_result.rc == 1
-      - counter_pid_result.rc == 0
-  become: yes
+- shell: ps x|grep [g]ify # get status of gify-panda process. filter grep output to avoid false-positives
+  ignore_errors: yes # relax ansible to avoid terminating the playbook
+  register: gify_result # save exit code 
+  changed_when: gify_result.rc != 0 # avoid false reporting of changed task
+
+- shell: ls /tmp/gify-panda.pid # get status of gify-panda PID file
+  ignore_errors: yes
+  register: gify_pid_result
+  changed_when: gify_pid_result.rc != 0
+
+- shell: ps x|grep [c]ounter # do the same for counter-panda
+  ignore_errors: yes
+  register: counter_result
+  changed_when: counter_result.rc != 0
+
+- shell: ls /tmp/counter-panda.pid
+  ignore_errors: yes
+  register: counter_pid_result
+  changed_when: counter_pid_result.rc != 0
+
+- name: educating gify panda
+  file:
+    path: /tmp/gify-panda.pid
+    state: absent # remove orphan PID file if service crashed to allow restart upon deployment
+  when: 
+  - gify_result.rc == 1 # only if process is dead
+  - gify_pid_result.rc == 0 # only if PID file exists
+
+- name: educating counter panda
+  file: 
+    path: /tmp/counter-panda.pid
+    state: absent
+  when: 
+  - counter_result.rc == 1
+  - counter_pid_result.rc == 0

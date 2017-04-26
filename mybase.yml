@@ -10,7 +10,7 @@
   hosts: mybase
   become: yes
   roles:
-    - { role: clean, tags: clean }
-    - { role: python, tags: python }
-    - { role: gify-panda, tags: gify-panda }
-    - { role: counter-panda, tags: counter-panda }
+    - { role: clean, tags: clean } # contains tasks created to handle crashes
+    - { role: python, tags: python } # install python module dependencies
+    - { role: gify-panda, tags: gify-panda } # deploy and run gify-panda
+    - { role: counter-panda, tags: counter-panda } # deploy and run gify-panda
