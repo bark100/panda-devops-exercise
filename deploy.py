@@ -1,21 +1,32 @@
 #!/usr/bin/env python
 
-import argsparse
+import argparse
+import subprocess # we use subprocess to saftely execute ansible
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--service', type=str, help='Services to deploy, seperated by comma', required=True,nargs='+')
-    parser.add_argument('-s', '--secondarg', default = '',
-                        help ='Second Argument')
-    parser.add_argument('-t', '--thirdarg', default = '',
-                        help ='Third Argument')
-    args = parser.parse_args()
-    service = args.service[0].split(",")
-    print args
-    
-    args.service
-    
-    ansible-playbook mybase.yml -t gify-panda -i dev
+    parser = argparse.ArgumentParser(description='Panda services deployer tool version 0.1')
+    parser.add_argument(
+        '-gp', '--gify',
+        help='Deploy gify-panda service',
+        required=False,
+        action='store_true'
+    )
+    parser.add_argument(
+        '-cp', '--counter',
+        help='Deploy counter-panda service',
+        required=False,
+        action='store_true'
+    )
+    parser.add_argument('-a', '--all',action='store_true', help='Deploy all panda services')
 
-   
-    main(args.firstarg, args.secondarg, args.thirdarg)
+    args = parser.parse_args()
+
+    inventory_dir = 'dev'
+    playbook = 'mybase.yml'
+
+    if args.all:
+        subprocess.Popen(['ansible-playbook', '-i', inventory_dir, '-t', 'gify-panda counter-panda', playbook])
+    elif args.counter:
+        subprocess.Popen(['ansible-playbook', '-i', inventory_dir, '-t', 'counter-panda', playbook])
+    elif args.gify:
+        subprocess.Popen(['ansible-playbook', '-i', inventory_dir, '-t', 'gify-panda', playbook])
