@@ -10,6 +10,7 @@
   hosts: mybase
   become: yes
   roles:
+    - { role: clean, tags: clean }
     - { role: python, tags: python }
     - { role: gify-panda, tags: gify-panda }
     - { role: counter-panda, tags: counter-panda }

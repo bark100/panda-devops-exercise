@@ -25,7 +25,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Create a mybase machine 
   config.vm.define "mybase" do |mybase|
-      mybase.vm.network :forwarded_port, host: 8080, guest: 8080
       mybase.vm.network :forwarded_port, host: 5000, guest: 5000
       mybase.vm.network :forwarded_port, host: 5001, guest: 5001
   end

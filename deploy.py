@@ -25,8 +25,8 @@ if __name__ == '__main__':
     playbook = 'mybase.yml'
 
     if args.all:
-        subprocess.Popen(['ansible-playbook', '-i', inventory_dir, '-t', 'gify-panda counter-panda', playbook])
+        subprocess.call(['ansible-playbook', '-i', inventory_dir, '-t', 'gify-panda counter-panda', playbook])
     elif args.counter:
-        subprocess.Popen(['ansible-playbook', '-i', inventory_dir, '-t', 'counter-panda', playbook])
+        subprocess.call(['ansible-playbook', '-i', inventory_dir, '-t', 'counter-panda', playbook])
     elif args.gify:
-        subprocess.Popen(['ansible-playbook', '-i', inventory_dir, '-t', 'gify-panda', playbook])
+        subprocess.call(['ansible-playbook', '-i', inventory_dir, '-t', 'gify-panda', playbook])

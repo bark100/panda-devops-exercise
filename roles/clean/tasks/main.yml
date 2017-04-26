@@ -1,0 +1,40 @@
+---
+- block:
+  - shell: ps |grep gify
+    ignore_errors: yes
+    register: gify_result
+  
+  - shell: ls /tmp/gify-panda.pid
+    ignore_errors: yes
+    register: gify_pid_result
+  
+  - shell: ps |grep counter
+    ignore_errors: yes
+    register: counter_result
+  
+  - shell: ls /tmp/counter-panda.pid
+    ignore_errors: yes
+    register: counter_pid_result
+  
+  - block: 
+    - shell: pkill -9 -f gify-panda
+      name: educating gify panda
+      ignore_errors: yes
+    - file:
+        path: /tmp/gify-panda.pid
+        state: absent
+    when: 
+      - gify_result.rc == 1
+      - gify_pid_result.rc == 0
+ 
+  - block: 
+    - shell: pkill -9 -f counter-panda
+      name: educating counter panda
+      ignore_errors: yes
+    - file:
+        path: /tmp/counter-panda.pid
+        state: absent
+    when: 
+      - counter_result.rc == 1
+      - counter_pid_result.rc == 0
+  become: yes
