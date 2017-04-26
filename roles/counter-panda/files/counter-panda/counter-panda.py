@@ -37,8 +37,8 @@ if __name__ == '__main__': # execute code only if script is run directly
     sys.exit()
  
   try: # start a new Flask server
-    app.run(host='0.0.0.0', port=5001)
     file(pidfile, 'w').write(pid) # write PID to file
     signal.signal(signal.SIGTERM, signal_handler) # register new signal handler
+    app.run(host='0.0.0.0', port=5001)
   finally: # remove PID file upon shutdown from keyboard
     os.unlink(pidfile)
